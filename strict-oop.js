@@ -1,5 +1,9 @@
 "use strict";
-
+/* @description     Stric OOP for Javascript									    *
+ * @author          Tom Butler tom@r.je                                             *
+ * @copyright       2016 Tom Butler <tom@r.je> | https://r.je/                      *
+ * @license         http://www.opensource.org/licenses/bsd-license.php  BSD License *
+ * @version         1.0                                                             */
 var StrictOOP = class {
 	constructor(obj) {
 		this.obj = obj;
@@ -8,16 +12,12 @@ var StrictOOP = class {
 	}
 
 	property(name) {
-		if (!this.properties[name]) {
-			this.properties[name] = new StrictOOP.Property(this, name);
-		}
+		if (!this.properties[name])	this.properties[name] = new StrictOOP.Property(this, name);
 		return this.properties[name];
 	}
 
 	method(name) {
-		if (!this.methods[name]) {
-			this.methods[name] = new StrictOOP.Method(this, name);
-		}
+		if (!this.methods[name]) this.methods[name] = new StrictOOP.Method(this, name);
 		return this.methods[name];
 	}
 
@@ -26,21 +26,12 @@ var StrictOOP = class {
 			throw new Error('Generating a stack trace');
 		}
 		catch (e) {
-		//	console.log(e.stack);
-			var callerLine = e.stack.split('\n')[n];
-			return callerLine.split('at ')[1].split(' (')[0];
+			return e.stack.split('\n')[n].split('at ')[1].split(' (')[0];
 		}
 	}
 
-	checkvisibility(visibility, error) {
-		var caller = this.getCallerName(3);
-
-		//For methods there is an extra call in the stack
-		if (caller.indexOf('.parent.obj.(anonymous function)') > -1) {
-			var caller = this.getCallerName(4);
-		}
-		
-		if (caller.indexOf(this.obj.constructor.name) == -1 && visibility == 'private') {
+	checkVisibility(visibility, error) {
+		if (this.getCallerName(4).indexOf(this.obj.constructor.name) == -1 && visibility == 'private') {
 			throw new Error(error);
 		}
 	}
@@ -52,25 +43,20 @@ var StrictOOP = class {
 	}
 };
 
-
 StrictOOP.Method = class {
 	constructor(parent, name) {
 		this.parent = parent;
-
 		var oldFunc = parent.obj[name];
-
 		var self = this;
 
-		parent.obj[name] = function() {
-			parent.checkvisibility(self.visibility, 'Cannot call private method ' + name);
- 			
+		parent.obj[name] = function() {	
+			parent.checkVisibility(self.visibility, 'Cannot call private method ' + name);
+			
  			var result = oldFunc.apply(parent.obj, arguments);
 
- 			if (self.otype) {
- 				parent.checktype(self.otype, result, 'Method ' + name + ' must return a ' + self.otype);
- 			}
+ 			if (self.otype) parent.checktype(self.otype, result, 'Method ' + name + ' must return a ' + self.otype);
 			
-			return result;
+			return result;			
 		};
 	}
 
@@ -98,15 +84,14 @@ StrictOOP.Property = class {
 			get: function() {
 				var objtype = (typeof value == 'object') ? value.constructor.name : self.otype;
 
-				parent.checkvisibility(self.visibility, 'Cannot read private property ' + parent.obj.constructor.name + '.' + name);
+				parent.checkVisibility(self.visibility, 'Cannot read private property ' + parent.obj.constructor.name + '.' + name);
 				
 				return self.value;
 			},
 			set: function(value) {
-
 				var objtype = (typeof value == 'object') ? value.constructor.name : self.otype;
 
-				parent.checkvisibility(self.visibility, 'Cannot set private property ' + parent.obj.constructor.name + '.' + name);
+				parent.checkVisibility(self.visibility, 'Cannot set private property ' + parent.obj.constructor.name + '.' + name);
 				
 				if (self.otype) {
 					parent.checktype(self.otype, value, 'Cannot set property ' + name + ' to ' + value + ', expecting ' + self.otype);
@@ -131,4 +116,4 @@ StrictOOP.Property = class {
 	}
 }
 
-module.exports.StrictOOP;
+module.exports = StrictOOP;

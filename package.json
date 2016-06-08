@@ -1,0 +1,30 @@
+{
+  "name": "strict-oop",
+  "version": "1.0.0",
+  "description": "Strict Object Oriented Programming for Javascript",
+  "main": "strict-oop.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Level-2/StrictOOP.git"
+  },
+  "keywords": [
+    "strict",
+    "oop",
+    "object-oriented",
+    "programming",
+    "standards"
+  ],
+  "author": "Thomas Butler <tom@r.je> (https://r.je)",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/Level-2/StrictOOP/issues"
+  },
+  "homepage": "https://github.com/Level-2/StrictOOP#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
