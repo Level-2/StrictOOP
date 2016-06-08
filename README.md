@@ -144,7 +144,7 @@ class Car {
 	constructor() {
 		//Add strict OOP rules to this instance
 		var oop = new StrictOOP(this);
-		oop.property('speed').visibility('private').type('number');
+		oop.property('speed').is('private').type('number');
 
 		this.speed = 0;
 	}
