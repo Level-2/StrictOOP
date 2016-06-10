@@ -37,7 +37,7 @@ var StrictOOP = class {
 	}
 
 	checktype(expected, actual, error) {
-		if (!(typeof actual == expected || this.obj.constructor.name == expected)) {
+		if (expected != null && !(typeof actual == expected || this.obj.constructor.name == expected)) {
 				throw new Error(error);
 		}
 	}
@@ -54,7 +54,7 @@ StrictOOP.Method = class {
 			
  			var result = oldFunc.apply(parent.obj, arguments);
 
- 			if (self.otype) parent.checktype(self.otype, result, 'Method ' + name + ' must return a ' + self.otype);
+ 			parent.checktype(self.otype, result, 'Method ' + name + ' must return a ' + self.otype);
 			
 			return result;			
 		};
@@ -82,25 +82,15 @@ StrictOOP.Property = class {
 
 		Object.defineProperty(parent.obj, name, {
 			get: function() {
-				var objtype = (typeof value == 'object') ? value.constructor.name : self.otype;
-
 				parent.checkVisibility(self.visibility, 'Cannot read private property ' + parent.obj.constructor.name + '.' + name);
 				
 				return self.value;
 			},
 			set: function(value) {
-				var objtype = (typeof value == 'object') ? value.constructor.name : self.otype;
-
 				parent.checkVisibility(self.visibility, 'Cannot set private property ' + parent.obj.constructor.name + '.' + name);
-				
-				if (self.otype) {
-					parent.checktype(self.otype, value, 'Cannot set property ' + name + ' to ' + value + ', expecting ' + self.otype);
-				}
+				parent.checktype(self.otype, value, 'Cannot set property ' + name + ' to ' + value + ', expecting ' + self.otype);
 
-				if (self.otype && !(typeof value == self.otype || obj.constructor.name == self.otype)) {
-					throw new Error('Cannot set property ' + parent.obj.constructor.name + '.' + name + ' to ' + value + '. Expecting ' + self.otype + ' but ' + objtype + ' given.');
-				}
-				else self.value = value;
+				self.value = value;
 			}
 		});
 	}
